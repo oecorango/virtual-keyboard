@@ -30,3 +30,12 @@ body {
   float: left;
 }
 
+.clearfix {
+  display: block;
+  width: 100%;
+  clear: both;
+}
+
+.hidden {
+	display: none;
+}

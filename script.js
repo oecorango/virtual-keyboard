@@ -1,9 +1,9 @@
-let KEY_CODE = [
-  ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace'],
-  ['Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight', 'Backslash', 'Delete'],
-  ['CapsLock', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG', 'KeyH', 'KeyJ', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Enter'],
-  ['ShiftLeft', 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ArrowUp', 'ShiftRight'],
-  ['ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight'],
+const KEY_CODE = [
+  'Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace',
+  'Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight', 'Backslash', 'Delete',
+  'CapsLock', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG', 'KeyH', 'KeyJ', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Enter',
+  'ShiftLeft', 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ArrowUp', 'ShiftRight',
+  'ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight',
 ];
 
 const BUTTONS_RUS = [
@@ -31,17 +31,30 @@ BODY.append(textarea);
 BODY.append(keyboard);
 
 function initKey() {
-  let out = '';
   for (let i = 0; i < BUTTONS_RUS.length; i++) {
-    // if (i === 14 || i === 29 || i === 42 || i === 55) {
-    //   out = '<div class="clearfix">' + '</div>';
-    // }
     const keyboardKey = document.createElement('div');
-    keyboardKey.className = 'keyboard-key';
+    keyboardKey.className = `keyboard-key ${KEY_CODE[i]}`;
+
+    const keyRuUp = `<span class="keyUp hidden">${BUTTONS_RUS[i].toLocaleUpperCase()}</span>`;
+    const keyRuDown = `<span class="keyDown">${BUTTONS_RUS[i].toLocaleLowerCase()}</span>`;
+    const keyRuShift = `<span class="keyShift hidden">${BUTTONS_RUS[i]}</span>`;
+    const keyRuCaps = `<span class="caps hidden">${BUTTONS_RUS[i].toLocaleUpperCase()}</span>`;
+
+    const keyRu = document.createElement('span');
+    keyRu.className = 'rus';
+    keyRu.innerHTML = keyRuUp + keyRuDown + keyRuShift + keyRuCaps;
+
+    const keyEnUp = `<span class="keyUp hidden">${BUTTONS_EN[i].toLocaleUpperCase()}</span>`;
+    const keyEnDown = `<span class="keyDown">${BUTTONS_EN[i].toLocaleLowerCase()}</span>`;
+    const keyEnShift = `<span class="keyShift hidden">${BUTTONS_EN[i]}</span>`;
+    const keyEnCaps = `<span class="caps hidden">${BUTTONS_EN[i].toLocaleUpperCase()}</span>`;
+
+    const keyEn = document.createElement('span');
+    keyEn.className = 'en hidden';
+    keyEn.innerHTML = keyEnUp + keyEnDown + keyEnShift + keyEnCaps;
+
+    keyboardKey.append(keyRu, keyEn);
     keyboard.append(keyboardKey);
-    out = `<div class="key-rus">${BUTTONS_RUS[i]}</div>`;
-    // <div class="key-en hidden">${BUTTONS_EN[i]}</div>;
-    keyboardKey.innerHTML = out;
   }
 }
 
