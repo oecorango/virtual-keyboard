@@ -91,3 +91,23 @@ function initKey() {
 }
 
 initKey();
+
+const keyboardKey = document.querySelectorAll('.keyboard-key');
+
+document.addEventListener('keydown', (event) => {
+  for (let i = 0; i < KEY_CODE.length; i++) {
+    if (event.code === KEY_CODE[i]) {
+      keyboardKey[i].classList.add('active');
+    }
+  }
+});
+
+document.addEventListener('keyup', (event) => {
+  for (let i = 0; i < KEY_CODE.length; i++) {
+    if (event.code === KEY_CODE[i]) {
+      setTimeout(() => {
+        keyboardKey[i].classList.remove('active');
+      }, 100);
+    }
+  }
+});
