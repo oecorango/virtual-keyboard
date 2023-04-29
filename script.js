@@ -61,6 +61,11 @@ BODY.append(keyboard);
 
 function initKey() {
   for (let i = 0; i < KEY_CODE.length; i++) {
+    if (i === 14 || i === 29 || i === 42 || i === 55) {
+      const row = document.createElement('div');
+      row.className = 'row';
+      keyboard.append(row);
+    }
     const keyboardKey = document.createElement('div');
     keyboardKey.className = `keyboard-key ${KEY_CODE[i]}`;
 

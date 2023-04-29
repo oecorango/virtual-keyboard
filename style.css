@@ -1,42 +1,89 @@
 body {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .input-text {
-	display: block;
-	margin: auto;
-	padding: 10px;
-	width: 580px;
-	height: 150px;
-	font-size: 20px;
+  display: block;
+  margin: auto;
+  padding: 10px;
+  width: 580px;
+  height: 150px;
+  font-size: 20px;
 }
 
 .keyboard {
   display: flex;
-	flex-wrap: wrap;
-	/* justify-content: space-between; */
-	margin: 20px auto;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20px auto;
   padding: 10px;
-  border: 1px solid #000;
-	gap: 5px;
-	width: 580px;
+  border: 2px solid #000;
+  border-radius: 5px;
+  gap: 5px;
+  width: 580px;
+  background-color: #eeecec;
 }
 
-.rus,
-.en {
-  width: 30px;
-  height: 30px;
+.keyboard-key {
+  width: 20px;
+  height: 20px;
   border: 1px solid #000;
+  border-radius: 5px;
+  background-color: #fff;
   padding: 5px;
   float: left;
 }
 
-.clearfix {
+.rus,
+.en {
+  display: flex;
+  justify-content: center;
+}
+
+.Backspace {
+  width: 90px;
+}
+
+.Tab,
+.Delete,
+.ControlLeft,
+.MetaLeft,
+.AltLeft {
+  width: 35px;
+  background-color: #acacac;
+}
+
+.AltRight,
+.ControlRight {
+  width: 30px;
+  background-color: #acacac;
+}
+
+.CapsLock,
+.Enter,
+.ShiftLeft,
+.ShiftRight {
+  width: 70px;
+  background-color: #acacac;
+}
+
+.Space {
+  width: 190px;
+}
+
+.ArrowLeft,
+.ArrowDown,
+.ArrowRight,
+.ArrowUp {
+  background-color: #acacac;
+}
+
+.row {
   display: block;
   width: 100%;
   clear: both;
 }
 
 .hidden {
-	display: none;
+  display: none;
 }
