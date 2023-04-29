@@ -6,18 +6,47 @@ const KEY_CODE = [
   'ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight',
 ];
 
-const BUTTONS_RUS = [
-  'ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '+', 'Backspace',
+const BUTTONS_RUS_DOWN = [
+  'ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
   'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\', 'Del',
   'CapsLock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter',
   'Shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '.', '▲', 'Shift',
   'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
 ];
-const BUTTONS_EN = [
-  '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '+', 'Backspace',
+const BUTTONS_RUS_CAPS = [
+  'Ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
+  'Tab', 'Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ъ', '\\', 'Del',
+  'CapsLock', 'Ф', 'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Э', 'Enter',
+  'Shift', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', '.', '▲', 'Shift',
+  'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
+];
+const BUTTONS_RUS_SHIFT = [
+  'Ё', '!', '"', '№', ';', '%', ':', '?', '*', '(', ')', '_', '+', 'Backspace',
+  'Tab', 'Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ъ', '/', 'Del',
+  'CapsLock', 'Ф', 'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Э', 'Enter',
+  'Shift', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', '.', '▲', 'Shift',
+  'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
+];
+
+const BUTTONS_EN_DOWN = [
+  '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
   'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', 'Del',
   'CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'Enter',
   'Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', '▲', 'Shift',
+  'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
+];
+const BUTTONS_EN_CAPS = [
+  '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
+  'Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\', 'Del',
+  'CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'', 'Enter',
+  'Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', '▲', 'Shift',
+  'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
+];
+const BUTTONS_EN_SHIFT = [
+  '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 'Backspace',
+  'Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|', 'Del',
+  'CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', 'Enter',
+  'Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', '▲', 'Shift',
   'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
 ];
 
@@ -31,27 +60,25 @@ BODY.append(textarea);
 BODY.append(keyboard);
 
 function initKey() {
-  for (let i = 0; i < BUTTONS_RUS.length; i++) {
+  for (let i = 0; i < KEY_CODE.length; i++) {
     const keyboardKey = document.createElement('div');
     keyboardKey.className = `keyboard-key ${KEY_CODE[i]}`;
 
-    const keyRuUp = `<span class="keyUp hidden">${BUTTONS_RUS[i].toLocaleUpperCase()}</span>`;
-    const keyRuDown = `<span class="keyDown">${BUTTONS_RUS[i].toLocaleLowerCase()}</span>`;
-    const keyRuShift = `<span class="keyShift hidden">${BUTTONS_RUS[i]}</span>`;
-    const keyRuCaps = `<span class="caps hidden">${BUTTONS_RUS[i].toLocaleUpperCase()}</span>`;
+    const keyRuDown = `<span class="keyDown">${BUTTONS_RUS_DOWN[i]}</span>`;
+    const keyRuShift = `<span class="keyShift hidden">${BUTTONS_RUS_SHIFT[i]}</span>`;
+    const keyRuCaps = `<span class="caps hidden">${BUTTONS_RUS_CAPS[i]}</span>`;
 
     const keyRu = document.createElement('span');
     keyRu.className = 'rus';
-    keyRu.innerHTML = keyRuUp + keyRuDown + keyRuShift + keyRuCaps;
+    keyRu.innerHTML = keyRuDown + keyRuShift + keyRuCaps;
 
-    const keyEnUp = `<span class="keyUp hidden">${BUTTONS_EN[i].toLocaleUpperCase()}</span>`;
-    const keyEnDown = `<span class="keyDown">${BUTTONS_EN[i].toLocaleLowerCase()}</span>`;
-    const keyEnShift = `<span class="keyShift hidden">${BUTTONS_EN[i]}</span>`;
-    const keyEnCaps = `<span class="caps hidden">${BUTTONS_EN[i].toLocaleUpperCase()}</span>`;
+    const keyEnDown = `<span class="keyDown">${BUTTONS_EN_DOWN[i]}</span>`;
+    const keyEnShift = `<span class="keyShift hidden">${BUTTONS_EN_SHIFT[i]}</span>`;
+    const keyEnCaps = `<span class="caps hidden">${BUTTONS_EN_CAPS[i]}</span>`;
 
     const keyEn = document.createElement('span');
     keyEn.className = 'en hidden';
-    keyEn.innerHTML = keyEnUp + keyEnDown + keyEnShift + keyEnCaps;
+    keyEn.innerHTML = keyEnDown + keyEnShift + keyEnCaps;
 
     keyboardKey.append(keyRu, keyEn);
     keyboard.append(keyboardKey);
