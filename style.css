@@ -32,6 +32,7 @@ body {
   background-color: #fff;
   padding: 5px;
   float: left;
+  cursor: pointer;
 }
 
 .rus,

@@ -6,6 +6,11 @@ const KEY_CODE = [
   'ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight',
 ];
 
+const KEY_CODE_COMMAND = [
+  'Backspace', 'Tab', 'Delete', 'CapsLock', 'Enter', 'ShiftLeft', 'ShiftRight',
+  'ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ControlRight',
+];
+
 const BUTTONS_RUS_DOWN = [
   'ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
   'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\', 'Del',
@@ -60,7 +65,7 @@ BODY.append(textarea);
 BODY.append(keyboard);
 
 function initKey() {
-  for (let i = 0; i < KEY_CODE.length; i++) {
+  for (let i = 0; i < KEY_CODE.length; i += 1) {
     if (i === 14 || i === 29 || i === 42 || i === 55) {
       const row = document.createElement('div');
       row.className = 'row';
@@ -93,18 +98,79 @@ function initKey() {
 initKey();
 
 const keyboardKey = document.querySelectorAll('.keyboard-key');
+const btnCaps = document.querySelectorAll('.caps');
+const btnDown = document.querySelectorAll('.keyDown');
+const btnShift = document.querySelectorAll('.keyShift');
+let pressCapsLock = 'off';
+
+const keyCaps = () => {
+  btnCaps.forEach((elem) => {
+    elem.classList.toggle('hidden');
+  });
+  btnDown.forEach((elem) => {
+    elem.classList.toggle('hidden');
+  });
+  if (pressCapsLock === 'off') {
+    pressCapsLock = 'on';
+  } else pressCapsLock = 'off';
+};
+
+const keyShift = () => {
+  btnShift.forEach((elem) => {
+    elem.classList.toggle('hidden');
+  });
+  btnCaps.forEach((elem) => {
+    elem.classList.add('hidden');
+  });
+  btnDown.forEach((elem) => {
+    elem.classList.add('hidden');
+  });
+};
+
+const keyDown = () => {
+  btnShift.forEach((elem) => {
+    elem.classList.add('hidden');
+  });
+  btnCaps.forEach((elem) => {
+    elem.classList.add('hidden');
+  });
+  btnDown.forEach((elem) => {
+    elem.classList.remove('hidden');
+  });
+};
 
 document.addEventListener('keydown', (event) => {
-  for (let i = 0; i < KEY_CODE.length; i++) {
-    if (event.code === KEY_CODE[i]) {
+  event.preventDefault();
+  if (event.code === 'CapsLock') {
+    keyCaps();
+  }
+  if (event.code === 'ShiftRight' || event.code === 'ShiftLeft') {
+    keyShift();
+  }
+  for (let i = 0; i < KEY_CODE.length; i += 1) {
+    if (event.code === KEY_CODE[i] && event.code !== 'CapsLock') {
       keyboardKey[i].classList.add('active');
+      if (KEY_CODE_COMMAND.indexOf(event.code) === -1) {
+        textarea.value += BUTTONS_RUS_DOWN[i];
+      }
+    }
+    if (event.code === KEY_CODE[i] && event.code === 'CapsLock') {
+      keyboardKey[i].classList.toggle('active');
     }
   }
 });
 
 document.addEventListener('keyup', (event) => {
-  for (let i = 0; i < KEY_CODE.length; i++) {
-    if (event.code === KEY_CODE[i]) {
+  event.preventDefault();
+  console.log(event);
+  if (pressCapsLock === 'off' && event.code !== 'CapsLock') {
+    keyDown();
+  }
+  if (pressCapsLock === 'on' && event.code !== 'CapsLock') {
+    keyCaps();
+  }
+  for (let i = 0; i < KEY_CODE.length; i += 1) {
+    if (event.code === KEY_CODE[i] && event.code !== 'CapsLock') {
       setTimeout(() => {
         keyboardKey[i].classList.remove('active');
       }, 100);
