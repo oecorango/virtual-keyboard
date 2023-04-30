@@ -163,7 +163,7 @@ const keyHidden = () => {
   });
 };
 
-// ивент на капслок (нажатие и отжим)
+// ивент на капслок и шифт (нажатие)
 document.addEventListener('keydown', (event) => {
   event.preventDefault();
   if (event.code === 'CapsLock' && pressCapsLock === 'off') {
@@ -175,11 +175,6 @@ document.addEventListener('keydown', (event) => {
     keyDown();
     pressCapsLock = 'off';
   }
-});
-
-// ивент на шифт нажатие
-document.addEventListener('keydown', (event) => {
-  event.preventDefault();
   if ((event.code === 'ShiftLeft' || event.code === 'ShiftRight') && pressCapsLock === 'on') {
     keyHidden();
     keyShiftCaps();
@@ -189,7 +184,7 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-// ивент на шифт отжатие
+// ивент на шифт (отжатие)
 document.addEventListener('keyup', (event) => {
   event.preventDefault();
   if ((event.code === 'ShiftLeft' || event.code === 'ShiftRight') && pressCapsLock === 'on') {
@@ -207,11 +202,7 @@ document.addEventListener('keydown', (event) => {
   for (let i = 0; i < KEY_CODE.length; i += 1) {
     if (event.code === KEY_CODE[i] && event.code !== 'CapsLock') {
       keyboardKey[i].classList.add('active');
-      // if (KEY_CODE_COMMAND.indexOf(event.code) === -1) {
-      //   textarea.value += BUTTONS_RUS_DOWN[i];
-      // }
-    }
-    if (event.code === KEY_CODE[i] && event.code === 'CapsLock') {
+    } if (event.code === KEY_CODE[i] && event.code === 'CapsLock') {
       keyboardKey[i].classList.toggle('active');
     }
   }
@@ -296,13 +287,18 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
+// действие на нажатие командных клавиш
 function pressBackspace() {
-  const position = textarea.selectionEnd;
-  if (textarea.value.length === textarea.selectionStart) {
+  const positionStart = textarea.selectionStart;
+  const positionEnd = textarea.selectionEnd;
+  if (positionStart !== positionEnd) {
+    textarea.value = `${textarea.value.slice(0, positionStart)}${textarea.value.slice(positionEnd)}`;
+    textarea.selectionEnd = positionStart;
+  } else if (textarea.value.length === textarea.selectionStart) {
     textarea.value = textarea.value.slice(0, -1);
-  } else if (position > 0) {
-    textarea.value = `${textarea.value.slice(0, position - 1)}${textarea.value.slice(position)}`;
-    textarea.selectionEnd = position - 1;
+  } else if (positionEnd > 0) {
+    textarea.value = `${textarea.value.slice(0, positionEnd - 1)}${textarea.value.slice(positionEnd)}`;
+    textarea.selectionEnd = positionStart;
   }
 }
 
@@ -317,13 +313,25 @@ function pressTab() {
   const position = textarea.selectionEnd;
   const text = textarea.value;
   textarea.value = `${text.slice(0, position)}  ${text.slice(position)}`;
-  textarea.selectionEnd = position - 1;
+  textarea.selectionEnd = position + 2;
 }
 
 function pressDel() {
+  const positionStart = textarea.selectionStart;
+  const positionEnd = textarea.selectionEnd;
+  if (positionStart !== positionEnd) {
+    textarea.value = `${textarea.value.slice(0, positionStart)}${textarea.value.slice(positionEnd)}`;
+    textarea.selectionEnd = positionStart;
+  } else {
+    textarea.value = `${textarea.value.slice(0, positionEnd)}${textarea.value.slice(positionEnd + 1)}`;
+    textarea.selectionEnd = positionEnd;
+  }
+}
+
+function pressEnter() {
   const position = textarea.selectionEnd;
-  textarea.value = `${textarea.value.slice(0, position)}${textarea.value.slice(position + 1)}`;
-  textarea.selectionEnd = position;
+  textarea.value = `${textarea.value.slice(0, position)}${'\n'}${textarea.value.slice(position)}`;
+  textarea.selectionEnd = position + 1;
 }
 
 document.addEventListener('keydown', (event) => {
@@ -337,7 +345,11 @@ document.addEventListener('keydown', (event) => {
         pressTab();
       } if (event.code === 'Delete') {
         pressDel();
+      } if (event.code === 'Enter') {
+        pressEnter();
       }
     }
   }
 });
+
+// события нажатия клавиши мышью
