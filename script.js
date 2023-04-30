@@ -283,8 +283,51 @@ document.addEventListener('keydown', (event) => {
         textarea.value += BUTTONS_EN_SHIFT_CAPS[i];
       }
     }
-    if (event.code === KEY_CODE[i] && event.code === 'Backspace') {
-      textarea.value = textarea.value.slice(0, -1);
+  }
+});
+
+function pressBackspace() {
+  const position = textarea.selectionEnd;
+  if (textarea.value.length === textarea.selectionStart) {
+    textarea.value = textarea.value.slice(0, -1);
+  } else if (position > 0) {
+    textarea.value = `${textarea.value.slice(0, position - 1)}${textarea.value.slice(position)}`;
+    textarea.selectionEnd = position - 1;
+  }
+}
+
+function pressSpace() {
+  const position = textarea.selectionEnd;
+  const text = textarea.value;
+  textarea.value = `${text.slice(0, position)} ${text.slice(position)}`;
+  textarea.selectionEnd = position + 1;
+}
+
+function pressTab() {
+  const position = textarea.selectionEnd;
+  const text = textarea.value;
+  textarea.value = `${text.slice(0, position)}  ${text.slice(position)}`;
+  textarea.selectionEnd = position - 1;
+}
+
+function pressDel() {
+  const position = textarea.selectionEnd;
+  textarea.value = `${textarea.value.slice(0, position)}${textarea.value.slice(position + 1)}`;
+  textarea.selectionEnd = position;
+}
+
+document.addEventListener('keydown', (event) => {
+  for (let i = 0; i < KEY_CODE_COMMAND.length; i += 1) {
+    if (event.code === KEY_CODE_COMMAND[i]) {
+      if (event.code === 'Backspace') {
+        pressBackspace();
+      } if (event.code === 'Space') {
+        pressSpace();
+      } if (event.code === 'Tab') {
+        pressTab();
+      } if (event.code === 'Delete') {
+        pressDel();
+      }
     }
   }
 });
