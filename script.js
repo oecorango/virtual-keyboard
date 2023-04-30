@@ -255,32 +255,42 @@ document.addEventListener('keyup', (event) => {
 // ------------даввабляем нажатую клавишу в окно ввода-----------
 document.addEventListener('keydown', (event) => {
   for (let i = 0; i < KEY_CODE.length; i += 1) {
+    const position = textarea.selectionEnd;
+    const text = textarea.value;
     if ((event.code === KEY_CODE[i] && KEY_CODE_COMMAND.indexOf(event.code) === -1) && currentLang === 'rus') {
       if (pressCapsLock === 'off' && !event.shiftKey) {
-        textarea.value += BUTTONS_RUS_DOWN[i];
+        textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_DOWN[i]}${text.slice(position)}`;
+        textarea.selectionEnd = position + 1;
       }
       if (pressCapsLock === 'off' && event.shiftKey) {
-        textarea.value += BUTTONS_RUS_SHIFT[i];
+        textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_SHIFT[i]}${text.slice(position)}`;
+        textarea.selectionEnd = position + 1;
       }
       if (pressCapsLock === 'on' && !event.shiftKey) {
-        textarea.value += BUTTONS_RUS_CAPS[i];
+        textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_CAPS[i]}${text.slice(position)}`;
+        textarea.selectionEnd = position + 1;
       }
       if (pressCapsLock === 'on' && event.shiftKey) {
-        textarea.value += BUTTONS_RUS_SHIFT_CAPS[i];
+        textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_SHIFT_CAPS[i]}${text.slice(position)}`;
+        textarea.selectionEnd = position + 1;
       }
     }
     if ((event.code === KEY_CODE[i] && KEY_CODE_COMMAND.indexOf(event.code) === -1) && currentLang === 'en') {
       if (pressCapsLock === 'off' && !event.shiftKey) {
-        textarea.value += BUTTONS_EN_DOWN[i];
+        textarea.value = `${text.slice(0, position)}${BUTTONS_EN_DOWN[i]}${text.slice(position)}`;
+        textarea.selectionEnd = position + 1;
       }
       if (pressCapsLock === 'off' && event.shiftKey) {
-        textarea.value += BUTTONS_EN_SHIFT[i];
+        textarea.value = `${text.slice(0, position)}${BUTTONS_EN_SHIFT[i]}${text.slice(position)}`;
+        textarea.selectionEnd = position + 1;
       }
       if (pressCapsLock === 'on' && !event.shiftKey) {
-        textarea.value += BUTTONS_EN_CAPS[i];
+        textarea.value = `${text.slice(0, position)}${BUTTONS_EN_CAPS[i]}${text.slice(position)}`;
+        textarea.selectionEnd = position + 1;
       }
       if (pressCapsLock === 'on' && event.shiftKey) {
-        textarea.value += BUTTONS_EN_SHIFT_CAPS[i];
+        textarea.value = `${text.slice(0, position)}${BUTTONS_EN_SHIFT_CAPS[i]}${text.slice(position)}`;
+        textarea.selectionEnd = position + 1;
       }
     }
   }
