@@ -29,7 +29,14 @@ const BUTTONS_RUS_SHIFT = [
   'Ё', '!', '"', '№', ';', '%', ':', '?', '*', '(', ')', '_', '+', 'Backspace',
   'Tab', 'Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ъ', '/', 'Del',
   'CapsLock', 'Ф', 'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Э', 'Enter',
-  'Shift', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', '.', '▲', 'Shift',
+  'Shift', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', ',', '▲', 'Shift',
+  'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
+];
+const BUTTONS_SHIFT_CAPS = [
+  'ё', '!', '"', '№', ';', '%', ':', '?', '*', '(', ')', '_', '+', 'Backspace',
+  'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '/', 'Del',
+  'CapsLock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter',
+  'Shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', ',', '▲', 'Shift',
   'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
 ];
 
@@ -77,10 +84,11 @@ function initKey() {
     const keyRuDown = `<span class="keyDown">${BUTTONS_RUS_DOWN[i]}</span>`;
     const keyRuShift = `<span class="keyShift hidden">${BUTTONS_RUS_SHIFT[i]}</span>`;
     const keyRuCaps = `<span class="caps hidden">${BUTTONS_RUS_CAPS[i]}</span>`;
+    const keyRuShiftCaps = `<span class="shiftCups hidden">${BUTTONS_SHIFT_CAPS[i]}</span>`;
 
     const keyRu = document.createElement('span');
     keyRu.className = 'rus';
-    keyRu.innerHTML = keyRuDown + keyRuShift + keyRuCaps;
+    keyRu.innerHTML = keyRuDown + keyRuShift + keyRuCaps + keyRuShiftCaps;
 
     const keyEnDown = `<span class="keyDown">${BUTTONS_EN_DOWN[i]}</span>`;
     const keyEnShift = `<span class="keyShift hidden">${BUTTONS_EN_SHIFT[i]}</span>`;
@@ -101,52 +109,83 @@ const keyboardKey = document.querySelectorAll('.keyboard-key');
 const btnCaps = document.querySelectorAll('.caps');
 const btnDown = document.querySelectorAll('.keyDown');
 const btnShift = document.querySelectorAll('.keyShift');
+const btnShiftCaps = document.querySelectorAll('.shiftCups');
+
 let pressCapsLock = 'off';
 
 const keyCaps = () => {
   btnCaps.forEach((elem) => {
-    elem.classList.toggle('hidden');
+    elem.classList.remove('hidden');
   });
-  btnDown.forEach((elem) => {
-    elem.classList.toggle('hidden');
-  });
-  if (pressCapsLock === 'off') {
-    pressCapsLock = 'on';
-  } else pressCapsLock = 'off';
 };
 
 const keyShift = () => {
   btnShift.forEach((elem) => {
-    elem.classList.toggle('hidden');
-  });
-  btnCaps.forEach((elem) => {
-    elem.classList.add('hidden');
-  });
-  btnDown.forEach((elem) => {
-    elem.classList.add('hidden');
+    elem.classList.remove('hidden');
   });
 };
 
 const keyDown = () => {
-  btnShift.forEach((elem) => {
-    elem.classList.add('hidden');
-  });
-  btnCaps.forEach((elem) => {
-    elem.classList.add('hidden');
-  });
   btnDown.forEach((elem) => {
     elem.classList.remove('hidden');
   });
 };
 
+const keyShiftCaps = () => {
+  btnShiftCaps.forEach((elem) => {
+    elem.classList.remove('hidden');
+  });
+};
+
+const keyHidden = () => {
+  btnShiftCaps.forEach((elem) => {
+    elem.classList.add('hidden');
+  });
+  btnDown.forEach((elem) => {
+    elem.classList.add('hidden');
+  });
+  btnShift.forEach((elem) => {
+    elem.classList.add('hidden');
+  });
+  btnCaps.forEach((elem) => {
+    elem.classList.add('hidden');
+  });
+};
+
+// ивент на капслок
 document.addEventListener('keydown', (event) => {
   event.preventDefault();
-  if (event.code === 'CapsLock') {
+  if (event.code === 'CapsLock' && pressCapsLock === 'off') {
+    keyHidden();
     keyCaps();
+    pressCapsLock = 'on';
+  } else if (event.code === 'CapsLock' && pressCapsLock === 'on') {
+    keyHidden();
+    keyDown(); // допипать потом условие про зажатый шифт
+    pressCapsLock = 'off';
   }
-  if (event.code === 'ShiftRight' || event.code === 'ShiftLeft') {
+});
+
+// ивент на шифт
+document.addEventListener('keydown', (event) => {
+  event.preventDefault();
+  if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+    keyHidden();
     keyShift();
   }
+});
+
+document.addEventListener('keyup', (event) => {
+  event.preventDefault();
+  if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+    keyHidden();
+    keyDown(); // допипать потом условие про зажатый шифт
+  }
+});
+
+// подсвечиваем нужатую клавишу
+document.addEventListener('keydown', (event) => {
+  event.preventDefault();
   for (let i = 0; i < KEY_CODE.length; i += 1) {
     if (event.code === KEY_CODE[i] && event.code !== 'CapsLock') {
       keyboardKey[i].classList.add('active');
@@ -160,15 +199,9 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
+// убираем подсветку с клавиши
 document.addEventListener('keyup', (event) => {
   event.preventDefault();
-  console.log(event);
-  if (pressCapsLock === 'off' && event.code !== 'CapsLock') {
-    keyDown();
-  }
-  if (pressCapsLock === 'on' && event.code !== 'CapsLock') {
-    keyCaps();
-  }
   for (let i = 0; i < KEY_CODE.length; i += 1) {
     if (event.code === KEY_CODE[i] && event.code !== 'CapsLock') {
       setTimeout(() => {
