@@ -32,7 +32,7 @@ const BUTTONS_RUS_SHIFT = [
   'Shift', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', ',', '▲', 'Shift',
   'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
 ];
-const BUTTONS_SHIFT_CAPS = [
+const BUTTONS_RUS_SHIFT_CAPS = [
   'ё', '!', '"', '№', ';', '%', ':', '?', '*', '(', ')', '_', '+', 'Backspace',
   'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '/', 'Del',
   'CapsLock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter',
@@ -61,7 +61,15 @@ const BUTTONS_EN_SHIFT = [
   'Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', '▲', 'Shift',
   'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
 ];
+const BUTTONS_EN_SHIFT_CAPS = [
+  '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 'Backspace',
+  'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '{', '}', '|', 'Del',
+  'CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ':', '"', 'Enter',
+  'Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '<', '>', '?', '▲', 'Shift',
+  'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '◄', '▼', '►', 'Ctrl',
+];
 
+// -------------инициализируем клавиатуру в DOM-----------------
 const BODY = document.querySelector('body');
 const textarea = document.createElement('textarea');
 const keyboard = document.createElement('div');
@@ -84,7 +92,7 @@ function initKey() {
     const keyRuDown = `<span class="keyDown">${BUTTONS_RUS_DOWN[i]}</span>`;
     const keyRuShift = `<span class="keyShift hidden">${BUTTONS_RUS_SHIFT[i]}</span>`;
     const keyRuCaps = `<span class="caps hidden">${BUTTONS_RUS_CAPS[i]}</span>`;
-    const keyRuShiftCaps = `<span class="shiftCups hidden">${BUTTONS_SHIFT_CAPS[i]}</span>`;
+    const keyRuShiftCaps = `<span class="shiftCups hidden">${BUTTONS_RUS_SHIFT_CAPS[i]}</span>`;
 
     const keyRu = document.createElement('span');
     keyRu.className = 'rus';
@@ -93,10 +101,11 @@ function initKey() {
     const keyEnDown = `<span class="keyDown">${BUTTONS_EN_DOWN[i]}</span>`;
     const keyEnShift = `<span class="keyShift hidden">${BUTTONS_EN_SHIFT[i]}</span>`;
     const keyEnCaps = `<span class="caps hidden">${BUTTONS_EN_CAPS[i]}</span>`;
+    const keyEnShiftCaps = `<span class="shiftCups hidden">${BUTTONS_EN_SHIFT_CAPS[i]}</span>`;
 
     const keyEn = document.createElement('span');
     keyEn.className = 'en hidden';
-    keyEn.innerHTML = keyEnDown + keyEnShift + keyEnCaps;
+    keyEn.innerHTML = keyEnDown + keyEnShift + keyEnCaps + keyEnShiftCaps;
 
     keyboardKey.append(keyRu, keyEn);
     keyboard.append(keyboardKey);
@@ -105,6 +114,7 @@ function initKey() {
 
 initKey();
 
+// -----Изменяем значения кнопок от нажатия шифт и капс-----------
 const keyboardKey = document.querySelectorAll('.keyboard-key');
 const btnCaps = document.querySelectorAll('.caps');
 const btnDown = document.querySelectorAll('.keyDown');
@@ -152,7 +162,7 @@ const keyHidden = () => {
   });
 };
 
-// ивент на капслок
+// ивент на капслок (нажатие и отжим)
 document.addEventListener('keydown', (event) => {
   event.preventDefault();
   if (event.code === 'CapsLock' && pressCapsLock === 'off') {
@@ -161,25 +171,32 @@ document.addEventListener('keydown', (event) => {
     pressCapsLock = 'on';
   } else if (event.code === 'CapsLock' && pressCapsLock === 'on') {
     keyHidden();
-    keyDown(); // допипать потом условие про зажатый шифт
+    keyDown();
     pressCapsLock = 'off';
   }
 });
 
-// ивент на шифт
+// ивент на шифт нажатие
 document.addEventListener('keydown', (event) => {
   event.preventDefault();
-  if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+  if ((event.code === 'ShiftLeft' || event.code === 'ShiftRight') && pressCapsLock === 'on') {
+    keyHidden();
+    keyShiftCaps();
+  } else if ((event.code === 'ShiftLeft' || event.code === 'ShiftRight')) {
     keyHidden();
     keyShift();
   }
 });
 
+// ивент на шифт отжатие
 document.addEventListener('keyup', (event) => {
   event.preventDefault();
-  if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+  if ((event.code === 'ShiftLeft' || event.code === 'ShiftRight') && pressCapsLock === 'on') {
     keyHidden();
-    keyDown(); // допипать потом условие про зажатый шифт
+    keyCaps();
+  } else if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+    keyHidden();
+    keyDown();
   }
 });
 
@@ -208,5 +225,25 @@ document.addEventListener('keyup', (event) => {
         keyboardKey[i].classList.remove('active');
       }, 100);
     }
+  }
+});
+
+// -------------меняем раскладку клавиатуры----------------------
+const keyRus = document.querySelectorAll('.rus');
+const keyEn = document.querySelectorAll('.en');
+
+const changeKeyLanguage = () => {
+  keyRus.forEach((event) => {
+    event.classList.toggle('hidden');
+  });
+  keyEn.forEach((event) => {
+    event.classList.toggle('hidden');
+  });
+};
+
+document.addEventListener('keyup', (event) => {
+  event.preventDefault();
+  if ((event.code === 'ControlLeft' && event.altKey) || (event.code === 'AltLeft' && event.ctrlKey)) {
+    changeKeyLanguage();
   }
 });
