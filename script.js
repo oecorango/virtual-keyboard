@@ -122,6 +122,7 @@ const btnShift = document.querySelectorAll('.keyShift');
 const btnShiftCaps = document.querySelectorAll('.shiftCups');
 
 let pressCapsLock = 'off';
+let currentLang = 'rus';
 
 const keyCaps = () => {
   btnCaps.forEach((elem) => {
@@ -206,9 +207,9 @@ document.addEventListener('keydown', (event) => {
   for (let i = 0; i < KEY_CODE.length; i += 1) {
     if (event.code === KEY_CODE[i] && event.code !== 'CapsLock') {
       keyboardKey[i].classList.add('active');
-      if (KEY_CODE_COMMAND.indexOf(event.code) === -1) {
-        textarea.value += BUTTONS_RUS_DOWN[i];
-      }
+      // if (KEY_CODE_COMMAND.indexOf(event.code) === -1) {
+      //   textarea.value += BUTTONS_RUS_DOWN[i];
+      // }
     }
     if (event.code === KEY_CODE[i] && event.code === 'CapsLock') {
       keyboardKey[i].classList.toggle('active');
@@ -245,5 +246,45 @@ document.addEventListener('keyup', (event) => {
   event.preventDefault();
   if ((event.code === 'ControlLeft' && event.altKey) || (event.code === 'AltLeft' && event.ctrlKey)) {
     changeKeyLanguage();
+    if (currentLang === 'rus') {
+      currentLang = 'en';
+    } else currentLang = 'rus';
+  }
+});
+
+// ------------даввабляем нажатую клавишу в окно ввода-----------
+document.addEventListener('keydown', (event) => {
+  for (let i = 0; i < KEY_CODE.length; i += 1) {
+    if ((event.code === KEY_CODE[i] && KEY_CODE_COMMAND.indexOf(event.code) === -1) && currentLang === 'rus') {
+      if (pressCapsLock === 'off' && !event.shiftKey) {
+        textarea.value += BUTTONS_RUS_DOWN[i];
+      }
+      if (pressCapsLock === 'off' && event.shiftKey) {
+        textarea.value += BUTTONS_RUS_SHIFT[i];
+      }
+      if (pressCapsLock === 'on' && !event.shiftKey) {
+        textarea.value += BUTTONS_RUS_CAPS[i];
+      }
+      if (pressCapsLock === 'on' && event.shiftKey) {
+        textarea.value += BUTTONS_RUS_SHIFT_CAPS[i];
+      }
+    }
+    if ((event.code === KEY_CODE[i] && KEY_CODE_COMMAND.indexOf(event.code) === -1) && currentLang === 'en') {
+      if (pressCapsLock === 'off' && !event.shiftKey) {
+        textarea.value += BUTTONS_EN_DOWN[i];
+      }
+      if (pressCapsLock === 'off' && event.shiftKey) {
+        textarea.value += BUTTONS_EN_SHIFT[i];
+      }
+      if (pressCapsLock === 'on' && !event.shiftKey) {
+        textarea.value += BUTTONS_EN_CAPS[i];
+      }
+      if (pressCapsLock === 'on' && event.shiftKey) {
+        textarea.value += BUTTONS_EN_SHIFT_CAPS[i];
+      }
+    }
+    if (event.code === KEY_CODE[i] && event.code === 'Backspace') {
+      textarea.value = textarea.value.slice(0, -1);
+    }
   }
 });
