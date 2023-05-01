@@ -110,6 +110,11 @@ function initKey() {
     keyboardKey.append(keyRu, keyEn);
     keyboard.append(keyboardKey);
   }
+
+  const footerText = document.createElement('p');
+  footerText.classList.add('footer-text');
+  footerText.innerText = 'Клавиатура создана для рабочей среды Windows \n переключение языка левые: alt + ctrl';
+  BODY.append(footerText);
 }
 
 initKey();

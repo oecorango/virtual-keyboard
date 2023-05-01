@@ -103,3 +103,9 @@ body {
 .active:hover {
   background-color: #6e6e6e;
 }
+
+.footer-text {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
