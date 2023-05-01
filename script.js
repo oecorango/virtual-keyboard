@@ -114,7 +114,7 @@ function initKey() {
 
 initKey();
 
-// -----Изменяем значения кнопок от нажатия шифт и капс-----------
+// -------Изменяем значения кнопок от нажатия шифт и капс-----------
 const keyboardKey = document.querySelectorAll('.keyboard-key');
 const btnCaps = document.querySelectorAll('.caps');
 const btnDown = document.querySelectorAll('.keyDown');
@@ -163,7 +163,6 @@ const keyHidden = () => {
   });
 };
 
-// ивент на капслок и шифт (нажатие)
 document.addEventListener('keydown', (event) => {
   event.preventDefault();
   if (event.code === 'CapsLock' && pressCapsLock === 'off') {
@@ -184,7 +183,6 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-// ивент на шифт (отжатие)
 document.addEventListener('keyup', (event) => {
   event.preventDefault();
   if ((event.code === 'ShiftLeft' || event.code === 'ShiftRight') && pressCapsLock === 'on') {
@@ -196,7 +194,7 @@ document.addEventListener('keyup', (event) => {
   }
 });
 
-// подсвечиваем нужатую клавишу
+// -------------подсвечиваем нужатую клавишу-------------------
 document.addEventListener('keydown', (event) => {
   event.preventDefault();
   for (let i = 0; i < KEY_CODE.length; i += 1) {
@@ -208,7 +206,6 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-// убираем подсветку с клавиши
 document.addEventListener('keyup', (event) => {
   event.preventDefault();
   for (let i = 0; i < KEY_CODE.length; i += 1) {
@@ -287,7 +284,7 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-// действие на нажатие командных клавиш
+// ----------------действие на нажатие командных клавиш------------------
 function pressBackspace() {
   const positionStart = textarea.selectionStart;
   const positionEnd = textarea.selectionEnd;
@@ -298,7 +295,7 @@ function pressBackspace() {
     textarea.value = textarea.value.slice(0, -1);
   } else if (positionEnd > 0) {
     textarea.value = `${textarea.value.slice(0, positionEnd - 1)}${textarea.value.slice(positionEnd)}`;
-    textarea.selectionEnd = positionStart;
+    textarea.selectionEnd = positionStart - 1;
   }
 }
 
@@ -352,4 +349,60 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-// события нажатия клавиши мышью
+// ------------события нажатия клавиши командный мышью---------------
+keyboardKey.forEach((key) => {
+  key.addEventListener('mousedown', () => {
+    if (key.classList.contains('CapsLock')) {
+      key.classList.toggle('active');
+    } else key.classList.add('active');
+
+    for (let i = 0; i < KEY_CODE_COMMAND.length; i += 1) {
+      if (key.classList.contains(KEY_CODE_COMMAND[i])) {
+        if (KEY_CODE_COMMAND[i] === 'Backspace') {
+          pressBackspace();
+        } if (KEY_CODE_COMMAND[i] === 'Space') {
+          pressSpace();
+        } if (KEY_CODE_COMMAND[i] === 'Tab') {
+          pressTab();
+        } if (KEY_CODE_COMMAND[i] === 'Delete') {
+          pressDel();
+        } if (KEY_CODE_COMMAND[i] === 'Enter') {
+          pressEnter();
+        } if (KEY_CODE_COMMAND[i] === 'Enter') {
+          pressEnter();
+        } if (KEY_CODE_COMMAND[i] === 'CapsLock' && pressCapsLock === 'off') {
+          keyHidden();
+          keyCaps();
+          pressCapsLock = 'on';
+        } else if (KEY_CODE_COMMAND[i] === 'CapsLock' && pressCapsLock === 'on') {
+          keyHidden();
+          keyDown();
+          pressCapsLock = 'off';
+        } if ((KEY_CODE_COMMAND[i] === 'ShiftLeft' || KEY_CODE_COMMAND[i] === 'ShiftRight') && pressCapsLock === 'on') {
+          keyHidden();
+          keyShiftCaps();
+        } else if ((KEY_CODE_COMMAND[i] === 'ShiftLeft' || KEY_CODE_COMMAND[i] === 'ShiftRight')) {
+          keyHidden();
+          keyShift();
+        }
+      }
+    }
+  });
+
+  key.addEventListener('mouseup', () => {
+    if (!key.classList.contains('CapsLock')) {
+      setTimeout(() => {
+        key.classList.remove('active');
+      }, 100);
+    }
+    for (let i = 0; i < KEY_CODE_COMMAND.length; i += 1) {
+      if ((KEY_CODE_COMMAND[i] === 'ShiftLeft' || KEY_CODE_COMMAND[i] === 'ShiftRight') && pressCapsLock === 'on') {
+        keyHidden();
+        keyCaps();
+      } else if (KEY_CODE_COMMAND[i] === 'ShiftLeft' || KEY_CODE_COMMAND[i] === 'ShiftRight') {
+        keyHidden();
+        keyDown();
+      }
+    }
+  });
+});
