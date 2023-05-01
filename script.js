@@ -453,3 +453,19 @@ keyboardKey.forEach((key) => {
     }
   });
 });
+
+// ------------------local storage-------------------------------
+function setLocalStorage() {
+  localStorage.setItem('KeyboardLang', currentLang);
+}
+window.addEventListener('beforeunload', setLocalStorage);
+
+function getLocalStorage() {
+  if (localStorage.getItem('KeyboardLang')) {
+    currentLang = localStorage.getItem('KeyboardLang');
+    if (currentLang === 'en') {
+      changeKeyLanguage();
+    }
+  }
+}
+window.addEventListener('load', getLocalStorage);
