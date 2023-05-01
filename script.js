@@ -113,7 +113,7 @@ function initKey() {
 
   const footerText = document.createElement('p');
   footerText.classList.add('footer-text');
-  footerText.innerText = 'Клавиатура создана для рабочей среды Windows \n переключение языка левые: alt + ctrl';
+  footerText.innerText = 'Клавиатура создана для рабочей среды Windows \n переключение языка клавиши: левый (alt + ctrl) или "клик" на правый (ctrl)';
   BODY.append(footerText);
 }
 
@@ -362,6 +362,8 @@ keyboardKey.forEach((key) => {
       key.classList.toggle('active');
     } else key.classList.add('active');
 
+    textarea.focus();
+
     for (let i = 0; i < KEY_CODE_COMMAND.length; i += 1) {
       if (key.classList.contains(KEY_CODE_COMMAND[i])) {
         if (KEY_CODE_COMMAND[i] === 'Backspace') {
@@ -393,11 +395,14 @@ keyboardKey.forEach((key) => {
           keyShift();
           pressShift = 'on';
         }
+        if (KEY_CODE_COMMAND[i] === 'ControlRight') {
+          changeKeyLanguage();
+        }
       }
     }
 
     for (let i = 0; i < KEY_CODE.length; i += 1) {
-      const position = textarea.selectionEnd;
+      const position = textarea.selectionStart;
       const text = textarea.value;
       const containClass = key.classList.contains(KEY_CODE[i]);
       if ((containClass && KEY_CODE_COMMAND.indexOf(key.classList[1]) === -1) && currentLang === 'rus') {
