@@ -122,6 +122,7 @@ const btnShift = document.querySelectorAll('.keyShift');
 const btnShiftCaps = document.querySelectorAll('.shiftCups');
 
 let pressCapsLock = 'off';
+let pressShift = 'off';
 let currentLang = 'rus';
 
 const keyCaps = () => {
@@ -165,21 +166,23 @@ const keyHidden = () => {
 
 document.addEventListener('keydown', (event) => {
   event.preventDefault();
-  if (event.code === 'CapsLock' && pressCapsLock === 'off') {
-    keyHidden();
-    keyCaps();
-    pressCapsLock = 'on';
-  } else if (event.code === 'CapsLock' && pressCapsLock === 'on') {
-    keyHidden();
-    keyDown();
-    pressCapsLock = 'off';
-  }
-  if ((event.code === 'ShiftLeft' || event.code === 'ShiftRight') && pressCapsLock === 'on') {
-    keyHidden();
-    keyShiftCaps();
-  } else if ((event.code === 'ShiftLeft' || event.code === 'ShiftRight')) {
-    keyHidden();
-    keyShift();
+  if (!event.repeat) {
+    if (event.code === 'CapsLock' && pressCapsLock === 'off') {
+      keyHidden();
+      keyCaps();
+      pressCapsLock = 'on';
+    } else if (event.code === 'CapsLock' && pressCapsLock === 'on') {
+      keyHidden();
+      keyDown();
+      pressCapsLock = 'off';
+    }
+    if ((event.code === 'ShiftLeft' || event.code === 'ShiftRight') && pressCapsLock === 'on') {
+      keyHidden();
+      keyShiftCaps();
+    } else if ((event.code === 'ShiftLeft' || event.code === 'ShiftRight')) {
+      keyHidden();
+      keyShift();
+    }
   }
 });
 
@@ -188,9 +191,11 @@ document.addEventListener('keyup', (event) => {
   if ((event.code === 'ShiftLeft' || event.code === 'ShiftRight') && pressCapsLock === 'on') {
     keyHidden();
     keyCaps();
+    pressShift = 'off';
   } else if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
     keyHidden();
     keyDown();
+    pressShift = 'off';
   }
 });
 
@@ -242,41 +247,36 @@ document.addEventListener('keyup', (event) => {
 
 // ------------даввабляем нажатую клавишу в окно ввода-----------
 document.addEventListener('keydown', (event) => {
+  event.preventDefault();
   for (let i = 0; i < KEY_CODE.length; i += 1) {
     const position = textarea.selectionEnd;
     const text = textarea.value;
     if ((event.code === KEY_CODE[i] && KEY_CODE_COMMAND.indexOf(event.code) === -1) && currentLang === 'rus') {
-      if (pressCapsLock === 'off' && !event.shiftKey) {
+      if (pressCapsLock === 'off' && (!event.shiftKey || pressShift === 'off')) {
         textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_DOWN[i]}${text.slice(position)}`;
         textarea.selectionEnd = position + 1;
-      }
-      if (pressCapsLock === 'off' && event.shiftKey) {
+      } if (pressCapsLock === 'off' && (event.shiftKey || pressShift === 'on')) {
         textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_SHIFT[i]}${text.slice(position)}`;
         textarea.selectionEnd = position + 1;
-      }
-      if (pressCapsLock === 'on' && !event.shiftKey) {
+      } if (pressCapsLock === 'on' && (!event.shiftKey || pressShift === 'off')) {
         textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_CAPS[i]}${text.slice(position)}`;
         textarea.selectionEnd = position + 1;
-      }
-      if (pressCapsLock === 'on' && event.shiftKey) {
+      } if (pressCapsLock === 'on' && (event.shiftKey || pressShift === 'on')) {
         textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_SHIFT_CAPS[i]}${text.slice(position)}`;
         textarea.selectionEnd = position + 1;
       }
     }
     if ((event.code === KEY_CODE[i] && KEY_CODE_COMMAND.indexOf(event.code) === -1) && currentLang === 'en') {
-      if (pressCapsLock === 'off' && !event.shiftKey) {
+      if (pressCapsLock === 'off' && (!event.shiftKey || pressShift === 'off')) {
         textarea.value = `${text.slice(0, position)}${BUTTONS_EN_DOWN[i]}${text.slice(position)}`;
         textarea.selectionEnd = position + 1;
-      }
-      if (pressCapsLock === 'off' && event.shiftKey) {
+      } if (pressCapsLock === 'off' && (event.shiftKey || pressShift === 'on')) {
         textarea.value = `${text.slice(0, position)}${BUTTONS_EN_SHIFT[i]}${text.slice(position)}`;
         textarea.selectionEnd = position + 1;
-      }
-      if (pressCapsLock === 'on' && !event.shiftKey) {
+      } if (pressCapsLock === 'on' && (!event.shiftKey || pressShift === 'off')) {
         textarea.value = `${text.slice(0, position)}${BUTTONS_EN_CAPS[i]}${text.slice(position)}`;
         textarea.selectionEnd = position + 1;
-      }
-      if (pressCapsLock === 'on' && event.shiftKey) {
+      } if (pressCapsLock === 'on' && (event.shiftKey || pressShift === 'on')) {
         textarea.value = `${text.slice(0, position)}${BUTTONS_EN_SHIFT_CAPS[i]}${text.slice(position)}`;
         textarea.selectionEnd = position + 1;
       }
@@ -332,6 +332,7 @@ function pressEnter() {
 }
 
 document.addEventListener('keydown', (event) => {
+  event.preventDefault();
   for (let i = 0; i < KEY_CODE_COMMAND.length; i += 1) {
     if (event.code === KEY_CODE_COMMAND[i]) {
       if (event.code === 'Backspace') {
@@ -351,7 +352,7 @@ document.addEventListener('keydown', (event) => {
 
 // ------------события нажатия клавиши командный мышью---------------
 keyboardKey.forEach((key) => {
-  key.addEventListener('mousedown', () => {
+  key.addEventListener('mousedown', (event) => {
     if (key.classList.contains('CapsLock')) {
       key.classList.toggle('active');
     } else key.classList.add('active');
@@ -381,9 +382,46 @@ keyboardKey.forEach((key) => {
         } if ((KEY_CODE_COMMAND[i] === 'ShiftLeft' || KEY_CODE_COMMAND[i] === 'ShiftRight') && pressCapsLock === 'on') {
           keyHidden();
           keyShiftCaps();
+          pressShift = 'on';
         } else if ((KEY_CODE_COMMAND[i] === 'ShiftLeft' || KEY_CODE_COMMAND[i] === 'ShiftRight')) {
           keyHidden();
           keyShift();
+          pressShift = 'on';
+        }
+      }
+    }
+
+    for (let i = 0; i < KEY_CODE.length; i += 1) {
+      const position = textarea.selectionEnd;
+      const text = textarea.value;
+      const containClass = key.classList.contains(KEY_CODE[i]);
+      if ((containClass && KEY_CODE_COMMAND.indexOf(key.classList[1]) === -1) && currentLang === 'rus') {
+        if (pressCapsLock === 'off' && (!event.shiftKey || pressShift === 'off')) {
+          textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_DOWN[i]}${text.slice(position)}`;
+          textarea.selectionEnd = position + 1;
+        } if (pressCapsLock === 'off' && (event.shiftKey || pressShift === 'on')) {
+          textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_SHIFT[i]}${text.slice(position)}`;
+          textarea.selectionEnd = position + 1;
+        } if (pressCapsLock === 'on' && (!event.shiftKey || pressShift === 'off')) {
+          textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_CAPS[i]}${text.slice(position)}`;
+          textarea.selectionEnd = position + 1;
+        } if (pressCapsLock === 'on' && (event.shiftKey || pressShift === 'on')) {
+          textarea.value = `${text.slice(0, position)}${BUTTONS_RUS_SHIFT_CAPS[i]}${text.slice(position)}`;
+          textarea.selectionEnd = position + 1;
+        }
+      } if ((containClass && KEY_CODE_COMMAND.indexOf(key.classList[1]) === -1) && currentLang === 'en') {
+        if (pressCapsLock === 'off' && (!event.shiftKey || pressShift === 'off')) {
+          textarea.value = `${text.slice(0, position)}${BUTTONS_EN_DOWN[i]}${text.slice(position)}`;
+          textarea.selectionEnd = position + 1;
+        } if (pressCapsLock === 'off' && (event.shiftKey || pressShift === 'on')) {
+          textarea.value = `${text.slice(0, position)}${BUTTONS_EN_SHIFT[i]}${text.slice(position)}`;
+          textarea.selectionEnd = position + 1;
+        } if (pressCapsLock === 'on' && (!event.shiftKey || pressShift === 'off')) {
+          textarea.value = `${text.slice(0, position)}${BUTTONS_EN_CAPS[i]}${text.slice(position)}`;
+          textarea.selectionEnd = position + 1;
+        } if (pressCapsLock === 'on' && (!event.shiftKey || pressShift === 'on')) {
+          textarea.value = `${text.slice(0, position)}${BUTTONS_EN_SHIFT_CAPS[i]}${text.slice(position)}`;
+          textarea.selectionEnd = position + 1;
         }
       }
     }
@@ -395,13 +433,17 @@ keyboardKey.forEach((key) => {
         key.classList.remove('active');
       }, 100);
     }
-    for (let i = 0; i < KEY_CODE_COMMAND.length; i += 1) {
-      if ((KEY_CODE_COMMAND[i] === 'ShiftLeft' || KEY_CODE_COMMAND[i] === 'ShiftRight') && pressCapsLock === 'on') {
-        keyHidden();
-        keyCaps();
-      } else if (KEY_CODE_COMMAND[i] === 'ShiftLeft' || KEY_CODE_COMMAND[i] === 'ShiftRight') {
-        keyHidden();
-        keyDown();
+    if (key.classList.contains('ShiftLeft') || key.classList.contains('ShiftRight')) {
+      for (let i = 0; i < KEY_CODE_COMMAND.length; i += 1) {
+        if ((KEY_CODE_COMMAND[i] === 'ShiftLeft' || KEY_CODE_COMMAND[i] === 'ShiftRight') && pressCapsLock === 'on') {
+          keyHidden();
+          keyCaps();
+          pressShift = 'off';
+        } else if (KEY_CODE_COMMAND[i] === 'ShiftLeft' || KEY_CODE_COMMAND[i] === 'ShiftRight') {
+          keyHidden();
+          keyDown();
+          pressShift = 'off';
+        }
       }
     }
   });
