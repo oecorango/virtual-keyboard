@@ -75,6 +75,7 @@ const textarea = document.createElement('textarea');
 const keyboard = document.createElement('div');
 
 textarea.className = 'input-text';
+textarea.rows = 5;
 keyboard.className = 'keyboard';
 BODY.append(textarea);
 BODY.append(keyboard);
@@ -332,7 +333,7 @@ function pressDel() {
 
 function pressEnter() {
   const position = textarea.selectionEnd;
-  textarea.value = `${textarea.value.slice(0, position)}${'\n'}${textarea.value.slice(position)}`;
+  textarea.value = `${textarea.value.slice(0, position)}\n${textarea.value.slice(position)}`;
   textarea.selectionEnd = position + 1;
 }
 
@@ -394,9 +395,11 @@ keyboardKey.forEach((key) => {
           keyHidden();
           keyShift();
           pressShift = 'on';
-        }
-        if (KEY_CODE_COMMAND[i] === 'ControlRight') {
+        } if (KEY_CODE_COMMAND[i] === 'ControlRight') {
           changeKeyLanguage();
+          if (currentLang === 'rus') {
+            currentLang = 'en';
+          } else currentLang = 'rus';
         }
       }
     }
