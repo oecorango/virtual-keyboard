@@ -75,6 +75,7 @@ const textarea = document.createElement('textarea');
 const keyboard = document.createElement('div');
 
 textarea.className = 'input-text';
+textarea.rows = 5;
 keyboard.className = 'keyboard';
 BODY.append(textarea);
 BODY.append(keyboard);
@@ -113,7 +114,7 @@ function initKey() {
 
   const footerText = document.createElement('p');
   footerText.classList.add('footer-text');
-  footerText.innerText = 'Клавиатура создана для рабочей среды Windows \n переключение языка левые: alt + ctrl';
+  footerText.innerText = 'Клавиатура создана для рабочей среды Windows \n переключение языка клавиши: левый (alt + ctrl) или "клик" на правый (ctrl)';
   BODY.append(footerText);
 }
 
@@ -332,7 +333,7 @@ function pressDel() {
 
 function pressEnter() {
   const position = textarea.selectionEnd;
-  textarea.value = `${textarea.value.slice(0, position)}${'\n'}${textarea.value.slice(position)}`;
+  textarea.value = `${textarea.value.slice(0, position)}\n${textarea.value.slice(position)}`;
   textarea.selectionEnd = position + 1;
 }
 
@@ -361,6 +362,8 @@ keyboardKey.forEach((key) => {
     if (key.classList.contains('CapsLock')) {
       key.classList.toggle('active');
     } else key.classList.add('active');
+
+    textarea.focus();
 
     for (let i = 0; i < KEY_CODE_COMMAND.length; i += 1) {
       if (key.classList.contains(KEY_CODE_COMMAND[i])) {
@@ -392,12 +395,17 @@ keyboardKey.forEach((key) => {
           keyHidden();
           keyShift();
           pressShift = 'on';
+        } if (KEY_CODE_COMMAND[i] === 'ControlRight') {
+          changeKeyLanguage();
+          if (currentLang === 'rus') {
+            currentLang = 'en';
+          } else currentLang = 'rus';
         }
       }
     }
 
     for (let i = 0; i < KEY_CODE.length; i += 1) {
-      const position = textarea.selectionEnd;
+      const position = textarea.selectionStart;
       const text = textarea.value;
       const containClass = key.classList.contains(KEY_CODE[i]);
       if ((containClass && KEY_CODE_COMMAND.indexOf(key.classList[1]) === -1) && currentLang === 'rus') {
