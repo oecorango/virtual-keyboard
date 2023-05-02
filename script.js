@@ -432,7 +432,7 @@ keyboardKey.forEach((key) => {
         } if (pressCapsLock === 'on' && (!event.shiftKey || pressShift === 'off')) {
           textarea.value = `${text.slice(0, position)}${BUTTONS_EN_CAPS[i]}${text.slice(position)}`;
           textarea.selectionEnd = position + 1;
-        } if (pressCapsLock === 'on' && (!event.shiftKey || pressShift === 'on')) {
+        } if (pressCapsLock === 'on' && (event.shiftKey || pressShift === 'on')) {
           textarea.value = `${text.slice(0, position)}${BUTTONS_EN_SHIFT_CAPS[i]}${text.slice(position)}`;
           textarea.selectionEnd = position + 1;
         }
